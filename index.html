@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>X &amp; O — Futuristic Tic-Tac-Toe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Animated background layers -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--cyan" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--pink" aria-hidden="true"></div>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__mark">X<span class="topbar__mark-o">O</span></span>
+      <span class="topbar__label">ARCADE</span>
+    </div>
+    <div class="topbar__actions">
+      <span class="game-counter" title="Games played this session">
+        <span class="game-counter__label">Match</span>
+        <span class="game-counter__value" id="gameNumber">01</span>
+      </span>
+      <button class="icon-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Toggle sound">
+        <svg class="icon icon-sound-on" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M19 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".6"/></svg>
+        <svg class="icon icon-sound-off" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+      <p class="hero__eyebrow">A classic, rebuilt for the neon age</p>
+      <h1 class="hero__title">X <span class="hero__amp">&amp;</span> O</h1>
+      <p class="hero__subtitle">Classic Game. Futuristic Experience.</p>
+      <p class="hero__desc">Three in a row, reimagined with neon glass, a sharp AI rival, and reflexes that actually matter. Play a friend across the table or test yourself against the machine.</p>
+      <a href="#game" class="btn btn--play" id="playNowBtn">
+        <span>PLAY NOW</span>
+        <svg viewBox="0 0 24 24" fill="none" class="btn__arrow"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </section>
+
+    <!-- GAME SECTION -->
+    <section class="game" id="game">
+      <div class="game-card">
+
+        <!-- Mode selector -->
+        <div class="mode-select" id="modeSelect" role="tablist" aria-label="Game mode">
+          <button class="mode-btn is-active" id="modePvp" role="tab" aria-selected="true" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Player vs Player
+          </button>
+          <button class="mode-btn" id="modePvc" role="tab" aria-selected="false" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M12 8V4M9 4h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="13.5" r="1.2" fill="currentColor"/><circle cx="15" cy="13.5" r="1.2" fill="currentColor"/></svg>
+            Player vs Computer
+          </button>
+        </div>
+
+        <!-- Difficulty selector (only for PvC) -->
+        <div class="difficulty-select" id="difficultySelect" hidden>
+          <span class="difficulty-select__label">Difficulty</span>
+          <div class="difficulty-select__group">
+            <button class="diff-btn" data-difficulty="easy" type="button">Easy</button>
+            <button class="diff-btn is-active" data-difficulty="medium" type="button">Medium</button>
+            <button class="diff-btn" data-difficulty="hard" type="button">Hard</button>
+          </div>
+        </div>
+
+        <!-- Turn indicator -->
+        <div class="turn-indicator" id="turnIndicator">
+          <span class="turn-indicator__glyph" id="turnGlyph">X</span>
+          <span class="turn-indicator__text" id="turnText">Player X's Turn</span>
+        </div>
+
+        <!-- Board -->
+        <div class="board" id="board">
+          <button class="cell" data-index="0" aria-label="Cell 1"></button>
+          <button class="cell" data-index="1" aria-label="Cell 2"></button>
+          <button class="cell" data-index="2" aria-label="Cell 3"></button>
+          <button class="cell" data-index="3" aria-label="Cell 4"></button>
+          <button class="cell" data-index="4" aria-label="Cell 5"></button>
+          <button class="cell" data-index="5" aria-label="Cell 6"></button>
+          <button class="cell" data-index="6" aria-label="Cell 7"></button>
+          <button class="cell" data-index="7" aria-label="Cell 8"></button>
+          <button class="cell" data-index="8" aria-label="Cell 9"></button>
+          <svg class="win-line" id="winLine" viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true">
+            <line id="winLineEl" x1="0" y1="0" x2="0" y2="0" />
+          </svg>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard" id="scoreboard">
+          <div class="score score--x">
+            <span class="score__label">Player X</span>
+            <span class="score__value" id="scoreX">0</span>
+          </div>
+          <div class="score score--draw">
+            <span class="score__label">Draws</span>
+            <span class="score__value" id="scoreDraw">0</span>
+          </div>
+          <div class="score score--o">
+            <span class="score__label" id="scoreOLabel">Player O</span>
+            <span class="score__value" id="scoreO">0</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <button class="btn btn--ghost" id="newGameBtn" type="button">New Game</button>
+          <button class="btn btn--ghost" id="resetScoreBtn" type="button">Reset Score</button>
+        </div>
+
+        <!-- Mini stats -->
+        <div class="stats" id="stats">
+          <span>Games played: <strong id="statsTotal">0</strong></span>
+          <span class="stats__dot">•</span>
+          <span>Current streak: <strong id="statsStreak">—</strong></span>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built for players who take their tic-tac-toe seriously.</p>
+  </footer>
+
+  <!-- Result Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__glow" id="modalGlow"></div>
+      <p class="modal__eyebrow" id="modalEyebrow">Round over</p>
+      <h2 class="modal__title" id="modalTitle">X WINS!</h2>
+      <p class="modal__subtitle" id="modalSubtitle">Three in a row. Clean sweep.</p>
+      <div class="modal__actions">
+        <button class="btn btn--play" id="playAgainBtn" type="button">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset confirmation toast -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <p class="confirm-box__title">Reset the scoreboard?</p>
+      <p class="confirm-box__desc">X, O and draw counts will go back to zero. This can't be undone.</p>
+      <div class="confirm-box__actions">
+        <button class="btn btn--ghost" id="cancelResetBtn" type="button">Cancel</button>
+        <button class="btn btn--danger" id="confirmResetBtn" type="button">Reset Score</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration canvas for winning confetti/particles -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
